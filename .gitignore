@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+dist/
+build/
+*.egg-info/
+.pytest_cache/
+.hypothesis/
+
+# Env / secrets — never committed
+*.env
+.env*
+
+# macOS
+.DS_Store
+
+# Media / large samples never belong in the repo
+*.mov
+*.mp4
+*.braw
+samples/

@@ -1,0 +1,32 @@
+# CI — runs on every push and pull request.
+# Gates: tests, SAST (bandit), dependency audit (pip-audit).
+# TODO (supply-chain hardening): pin each `uses:` to a full commit SHA.
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test-and-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: astral-sh/setup-uv@v5
+
+      - name: Install (locked)
+        run: uv sync --frozen --extra dev
+
+      - name: Tests
+        run: uv run pytest -q
+
+      - name: SAST (bandit)
+        run: uvx bandit -r src/ -ll
+
+      - name: Dependency audit (pip-audit)
+        run: uv run pip-audit

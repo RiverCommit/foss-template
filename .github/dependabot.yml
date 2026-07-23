@@ -1,0 +1,11 @@
+# Weekly dependency update PRs for both Python deps and the Actions themselves.
+version: 2
+updates:
+  - package-ecosystem: pip
+    directory: /
+    schedule:
+      interval: weekly
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly

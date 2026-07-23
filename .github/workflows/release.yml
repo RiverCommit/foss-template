@@ -1,0 +1,58 @@
+# Release — fires on a version tag (v1.2.3).
+# Pipeline: build -> audit gate -> SBOM -> SLSA provenance attestation -> GitHub Release.
+#
+# Trust model: no long-lived secrets. Provenance/signing use the workflow's
+# ephemeral OIDC identity (Sigstore, keyless). Verify any artifact with:
+#   gh attestation verify <file> --repo <OWNER>/<PROJECT>
+#
+# TODO (supply-chain hardening): pin each `uses:` to a full commit SHA.
+name: release
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write      # create the GitHub Release
+  id-token: write      # OIDC for keyless signing
+  attestations: write  # store provenance attestations
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: astral-sh/setup-uv@v5
+
+      - name: Install (locked)
+        run: uv sync --frozen
+
+      - name: Dependency audit gate (blocking)
+        run: uv run pip-audit
+
+      - name: Build distributions
+        run: uv build # -> dist/*.whl, dist/*.tar.gz
+
+      - name: Generate SBOM (CycloneDX, via syft)
+        uses: anchore/sbom-action@v0
+        with:
+          path: .
+          format: cyclonedx-json
+          output-file: sbom.cdx.json
+
+      - name: Attest build provenance (SLSA)
+        uses: actions/attest-build-provenance@v2
+        with:
+          subject-path: |
+            dist/*
+            sbom.cdx.json
+
+      - name: Create GitHub Release with artifacts + SBOM
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "${GITHUB_REF_NAME}" \
+            --title "${GITHUB_REF_NAME}" \
+            --generate-notes \
+            dist/* sbom.cdx.json

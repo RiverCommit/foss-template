@@ -1,0 +1,25 @@
+[project]
+name = "<PROJECT>"
+version = "0.1.0"
+description = "<one line — what it does, and that it is offline/no-telemetry>"
+requires-python = ">=3.11"
+license = "Apache-2.0"
+authors = [{ name = "<OWNER>" }]
+
+# Pin exact versions; commit uv.lock (run `uv lock`).
+dependencies = []
+
+[project.optional-dependencies]
+dev = [
+    "pytest==8.3.4",
+    "hypothesis==6.122.3",
+    "pip-audit==2.7.3",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q --strict-markers"
