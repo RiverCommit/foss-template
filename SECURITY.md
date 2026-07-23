@@ -27,7 +27,7 @@ Release artifacts carry:
 - **SLSA build provenance** attestations, verifiable with:
 
 ```
-gh attestation verify <artifact> --repo <OWNER>/<PROJECT>
+gh attestation verify <artifact> --repo RiverCommit/foss-template
 ```
 
 If verification fails for an artifact claiming to be from this project,
