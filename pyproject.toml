@@ -1,12 +1,10 @@
 [project]
-name = "<PROJECT>"
+name = "foss-template"
 version = "0.1.0"
-description = "<one line — what it does, and that it is offline/no-telemetry>"
+description = "Reusable supply-chain-transparent FOSS project template. Offline, no telemetry."
 requires-python = ">=3.11"
 license = "Apache-2.0"
-authors = [{ name = "<OWNER>" }]
-
-# Pin exact versions; commit uv.lock (run `uv lock`).
+authors = [{ name = "RiverCommit" }]
 dependencies = []
 
 [project.optional-dependencies]
@@ -19,6 +17,9 @@ dev = [
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/foss_template"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
