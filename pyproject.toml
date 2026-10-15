@@ -10,7 +10,7 @@ dependencies = []
 [project.optional-dependencies]
 dev = [
     "pytest==9.0.3",
-    "hypothesis==6.122.3",
+    "hypothesis==6.169.0",
     "pip-audit==2.7.3",
 ]
 
